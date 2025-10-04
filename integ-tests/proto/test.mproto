@@ -1,0 +1,63 @@
+struct JustASimpleStruct {
+    a: u32,
+    b: i64,
+    c: string,
+    d: [u8],
+    e: option<bool>,
+    y: result<string, void>,
+    z: box<result<string, void>>,
+}
+
+struct EmptyStruct { }
+
+enum SimpleEnum {
+    Fizz,
+    Buzz,
+}
+
+enum NestedEnum {
+    A { nested: box<NestedEnum> }
+}
+
+struct StructWithFloat {
+    x: f32,
+}
+
+enum EnumWithFloat {
+    Float { x: f32 },
+}
+
+struct Foo<T, U> {
+    x: T,
+    y: U,
+    z: result<string, Bar<U>>,
+}
+
+struct Bar<T> {
+    x: option<T>,
+}
+
+struct MyRequest<T> {
+    thing: T,
+}
+
+struct MyTimestampedResponse<T> {
+    timestamp: u64,
+    response: result<MySuccessfulResponse<T>, string>,
+}
+
+enum MySuccessfulResponse<T> {
+    EmptyVariant,
+    AnotherVariant { value: T }
+}
+
+enum WalkFilter<K> {
+    Omit { node_match: NodeMatch<K> },
+    Include { node_match: NodeMatch<K> },
+}
+
+enum NodeMatch<K> {
+    HasTag { tag: K },
+    HasTagValue { tag: K, value: [u8] },
+    HasTagPrefix { tag: K, prefix: [u8] },
+}

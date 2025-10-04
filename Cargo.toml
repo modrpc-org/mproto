@@ -1,0 +1,8 @@
+[workspace]
+resolver = "3"
+members = [
+    "runtime/rust",
+    "crates/mproto-codegen",
+    "crates/mprotoc",
+]
+exclude = ["integ-tests/test-mproto/rust"]

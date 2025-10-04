@@ -1,0 +1,15 @@
+[package]
+name = "mproto"
+version = "0.2.1"
+edition = "2024"
+description = "The Rust runtime library for mproto schemas"
+repository = "https://github.com/modrpc-org/mproto"
+keywords = ["serialization", "encoding", "schema", "binary"]
+categories = ["encoding", "parsing", "no-std::no-alloc"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[features]
+default = ["std"]
+std = []
+alloc = []

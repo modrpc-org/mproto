@@ -1,0 +1,14 @@
+[package]
+name = "mproto-codegen"
+version = "0.0.2"
+edition = "2024"
+description = "library to parse and generate code for mproto schemas"
+repository = "https://github.com/modrpc-org/mproto"
+documentation = "https://docs.rs/mproto"
+keywords = ["serialization", "compiler"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[dependencies]
+nom = "7"
+genco = "0.17"

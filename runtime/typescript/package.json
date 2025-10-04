@@ -1,0 +1,32 @@
+{
+  "name": "@modrpc-org/mproto",
+  "version": "0.2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && npx tape tests/**/*"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "tape": "5.7.5"
+  },
+  "description": "The TypeScript runtime library for mproto schemas.",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/modrpc-org/mproto.git"
+  },
+  "keywords": [
+    "serialization"
+  ],
+  "author": "modrpc authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/modrpc-org/mproto/issues"
+  },
+  "homepage": "https://github.com/modrpc-org/mproto#readme"
+}
