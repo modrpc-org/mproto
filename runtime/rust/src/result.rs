@@ -66,17 +66,11 @@ impl<'a, T: Decode<'a>, E: Decode<'a>> Decode<'a> for Result<T, E> {
     }
 }
 
-impl<Ok1, Err1, Ok2, Err2> Compatible<Result<Ok1, Err1>> for Result<Ok2, Err2>
+impl<Ok1, Err1, Ok2, Err2> Compatible<Result<Ok2, Err2>> for Result<Ok1, Err1>
 where
     Ok1: Compatible<Ok2>,
     Err1: Compatible<Err2>,
     Ok2: Encode,
     Err2: Encode,
-{
-}
-impl<Ok1, Err1, Ok2, Err2> Compatible<Result<Ok1, Err1>> for Result<Ok2, Err2>
-where
-    Ok2: Compatible<Ok1>,
-    Err2: Compatible<Err1>,
 {
 }

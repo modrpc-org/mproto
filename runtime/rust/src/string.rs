@@ -1,8 +1,11 @@
-use crate::{BaseLen, Decode, DecodeCursor, DecodeError, DecodeResult, Encode, EncodeCursor};
+use crate::{BaseLen, Compatible, Decode, DecodeCursor, DecodeError, DecodeResult, Encode, EncodeCursor};
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-use crate::{Compatible, Lazy, Owned};
+use crate::{Lazy, Owned};
 
+#[cfg(any(feature = "std", feature = "alloc"))]
+impl Compatible<String> for String {}
+impl Compatible<str> for str {}
 #[cfg(any(feature = "std", feature = "alloc"))]
 impl Compatible<String> for str {}
 #[cfg(any(feature = "std", feature = "alloc"))]

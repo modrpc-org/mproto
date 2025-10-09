@@ -1,5 +1,5 @@
 use crate::{
-    BaseLen, Decode, DecodeCursor, DecodeError, DecodeResult, Encode, EncodeCursor, Lazy, Owned,
+    BaseLen, Compatible, Decode, DecodeCursor, DecodeError, DecodeResult, Encode, EncodeCursor, Lazy, Owned,
 };
 
 macro_rules! copy_primitive_owned_impl {
@@ -15,6 +15,8 @@ macro_rules! copy_primitive_owned_impl {
         impl Lazy<'_> for $t {
             type Owned = $t;
         }
+
+        impl Compatible<$t> for $t { }
     };
 }
 

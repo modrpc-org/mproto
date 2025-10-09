@@ -452,10 +452,13 @@ pub fn rust_enum(
             $buf_variant_tokens
         }
 
+        impl$(buf_type_param_tokens) $compat_trait<$(name)Lazy$(buf_type_arg_tokens)> for $(name)Lazy$(buf_type_arg_tokens) { }
         $(&owned_cfg)
         impl$(buf_type_param_tokens) $compat_trait<$(name)Lazy$(buf_type_arg_tokens)> for $(name)$(owned_type_param_tokens) { }
         $(&owned_cfg)
         impl$(buf_type_param_tokens) $compat_trait<$(name)$(owned_type_param_tokens)> for $(name)Lazy$(buf_type_arg_tokens) { }
+        $(&owned_cfg)
+        impl$(rust_type_param_list(type_params, None, Some(quote! { $owned_trait }))) $compat_trait<$(name)$(owned_type_param_tokens)> for $(name)$(owned_type_param_tokens) { }
 
         $(&owned_cfg)
         $owned_impl

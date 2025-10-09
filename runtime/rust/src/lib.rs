@@ -1,4 +1,3 @@
-#![feature(marker_trait_attr)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
@@ -49,12 +48,9 @@ pub trait Decode<'a>: BaseLen + Sized {
     fn decode(cursor: &DecodeCursor<'a>) -> DecodeResult<Self>;
 }
 
-#[marker]
 pub trait Compatible<Other: ?Sized>: Encode {}
 
-impl<T: Encode> Compatible<T> for T {}
-
-pub trait Owned: Encode + for<'a> Decode<'a> + Clone + Send + Sync + 'static {
+pub trait Owned: Encode + for<'a> Decode<'a> + Compatible<Self> + Clone + Send + Sync + 'static {
     type Lazy<'a>: Lazy<'a, Owned = Self>;
 
     fn lazy_to_owned(lazy: Self::Lazy<'_>) -> DecodeResult<Self>;
@@ -86,7 +82,7 @@ pub fn decode_value<'a, D: Decode<'a>>(buf: &'a [u8]) -> DecodeResult<D> {
     Decode::decode(&DecodeCursor::new(buf))
 }
 
-// TODO consider using Yoke, either directly in apps or wrapping it here.
+// TODO Consider using Yoke, either directly in apps or wrapping it here.
 pub struct LazyBuf<T: Owned, B> {
     buf: Pin<B>,
     lazy: T::Lazy<'static>,
@@ -103,12 +99,14 @@ impl<T: Owned, B: Deref<Target = [u8]> + core::marker::Unpin> LazyBuf<T, B> {
     pub fn new(buf: B) -> Self {
         let buf = Pin::new(buf);
         let lazy: T::Lazy<'_> = decode_value(buf.as_ref().get_ref().as_ref()).unwrap();
+        // TODO is this actually safe to do?
         // Erase lifetime of lazy value
         let lazy = unsafe { core::mem::transmute(lazy) };
         Self { buf, lazy }
     }
 
     pub fn get<'a>(&'a self) -> T::Lazy<'a> {
+        // TODO is this actually safe to do?
         unsafe { core::mem::transmute(self.lazy.clone()) }
     }
 
@@ -117,6 +115,7 @@ impl<T: Owned, B: Deref<Target = [u8]> + core::marker::Unpin> LazyBuf<T, B> {
         F: for<'a> sealed::LazyBufMapFn<T::Lazy<'a>, U::Lazy<'a>>,
     {
         let lazy = f(self.lazy);
+        // TODO is this actually safe to do?
         // Erase lifetime of lazy value
         let lazy = unsafe { core::mem::transmute(lazy) };
         LazyBuf {
@@ -127,7 +126,6 @@ impl<T: Owned, B: Deref<Target = [u8]> + core::marker::Unpin> LazyBuf<T, B> {
 }
 
 impl<T, U: Compatible<T> + ?Sized> Compatible<T> for &U {}
-impl<T: ?Sized, U: Compatible<T>> Compatible<&T> for U {}
 
 impl<T: BaseLen + ?Sized> BaseLen for &T {
     const BASE_LEN: usize = T::BASE_LEN;

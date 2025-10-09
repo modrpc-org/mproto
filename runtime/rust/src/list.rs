@@ -1,10 +1,10 @@
-use crate::{BaseLen, Compatible, Decode, DecodeCursor, DecodeResult, Encode, EncodeCursor, Owned};
+use crate::{BaseLen, Compatible, Decode, DecodeCursor, DecodeError, DecodeResult, Encode, EncodeCursor, Owned};
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-use crate::{DecodeError, Lazy};
+use crate::Lazy;
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-impl<T: Owned> Owned for Vec<T> {
+impl<T: Owned + Compatible<T>> Owned for Vec<T> {
     type Lazy<'a> = ListLazy<'a, T>;
 
     fn lazy_to_owned(lazy: Self::Lazy<'_>) -> DecodeResult<Self> {
@@ -13,7 +13,7 @@ impl<T: Owned> Owned for Vec<T> {
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-impl<'a, T: Owned> Lazy<'a> for ListLazy<'a, T> {
+impl<'a, T: Owned + Compatible<T>> Lazy<'a> for ListLazy<'a, T> {
     type Owned = Vec<T>;
 }
 
@@ -152,6 +152,7 @@ where
     }
 }
 
+#[cfg(any(feature = "std", feature = "alloc"))]
 impl<T: Owned, U: Compatible<T>, I: Clone + ExactSizeIterator<Item = U>> Compatible<Vec<T>>
     for ListGen<I>
 {

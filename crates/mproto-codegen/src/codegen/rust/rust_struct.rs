@@ -177,8 +177,11 @@ pub fn rust_struct(
         $(&owned_cfg)
         $owned_impl
 
+        impl$(lazy_compat_impl_param_tokens) $compat_trait<$(name)Lazy$(buf_type_param_tokens)> for $(name)Lazy$(buf_type_param_tokens) { }
         $(&owned_cfg)
         impl$(lazy_compat_impl_param_tokens) $compat_trait<$(name)Lazy$(buf_type_param_tokens)> for $(name)$(owned_type_param_tokens) { }
+        $(&owned_cfg)
+        impl$(rust_type_param_list(type_params, None, Some(quote! { $owned_trait }))) $compat_trait<$(name)$(owned_type_param_tokens)> for $(name)$(owned_type_param_tokens) { }
         $(&owned_cfg)
         impl$(lazy_compat_impl_param_tokens) $compat_trait<$(name)$(owned_type_param_tokens)> for $(name)Lazy$(buf_type_param_tokens) { }
 

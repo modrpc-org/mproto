@@ -6,7 +6,7 @@ use crate::{
 };
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-use crate::{encode_value_vec, ListLazy};
+use crate::{encode_value_vec, BoxLazy, ListLazy};
 
 fn encode_decode<E, D>(v: E)
 where
@@ -182,36 +182,52 @@ fn test_custom_struct() {
 
 // Tests for the Compatible trait impls
 
-fn assert_compatible<T: Compatible<U>, U: Compatible<T>>() {}
+// TODO So far I haven't been able to implement full bidirectional coverage for the Compatible
+// trait without the unstable `marker_trait_attr` feature. Luckily in the real-world we don't
+// really need it - we usually just need to constrain that some passed in type's value is
+// Compatible with some Owned type.
+//fn assert_compatible<T: Compatible<U>, U: Compatible<T>>() {}
+fn assert_compatible<T, U: Compatible<T>>() {}
 
 #[allow(unused)]
-#[cfg(feature = "alloc")]
+#[cfg(any(feature = "std", feature = "alloc"))]
 fn test_compatibility() {
+    assert_compatible::<u32, u32>();
     assert_compatible::<u32, &u32>();
 
     assert_compatible::<Box<u32>, BoxLazy<u32>>();
 
+    assert_compatible::<String, String>();
     assert_compatible::<String, &str>();
 
     assert_compatible::<Vec<u32>, ListLazy<u32>>();
     assert_compatible::<Vec<u32>, &[u32]>();
-    assert_compatible::<&[u32], ListLazy<u32>>();
+    assert_compatible::<ListLazy<u32>, &[u32]>();
     assert_compatible::<Vec<Box<u32>>, Vec<BoxLazy<u32>>>();
     assert_compatible::<Vec<Vec<u32>>, Vec<ListLazy<u32>>>();
     assert_compatible::<Vec<Vec<u32>>, ListLazy<Vec<u32>>>();
     assert_compatible::<Vec<String>, ListLazy<String>>();
     assert_compatible::<Vec<&str>, ListLazy<String>>();
+
+    assert_compatible::<Option<Option<u32>>, Option<Option<u32>>>();
+    assert_compatible::<Option<Option<u32>>, Option<Option<&u32>>>();
+    assert_compatible::<Option<Vec<Option<&str>>>, Option<ListLazy<Option<String>>>>();
 }
 
 #[allow(unused)]
 fn test_result_compatibility_bidirectional<Ok1, Err1, Ok2, Err2>()
 where
-    Ok1: Compatible<Ok2>,
-    Err1: Compatible<Err2>,
-    Ok2: Encode,
-    Err2: Encode,
+    Ok1: Compatible<Ok1> + Compatible<Ok2>,
+    Err1: Compatible<Err1> + Compatible<Err2>,
+    Ok2: Compatible<Ok1> + Compatible<Ok2>,
+    Err2: Compatible<Err1> + Compatible<Err2>,
 {
+    assert_compatible::<Result<Ok1, Err1>, Result<Ok1, Err1>>();
+    assert_compatible::<Result<Ok2, Err2>, Result<Ok2, Err2>>();
+
     assert_compatible::<Result<Ok1, Err1>, Result<Ok2, Err2>>();
-    assert_compatible::<Result<Ok1, Err2>, Result<Ok1, Err2>>();
-    assert_compatible::<Result<Ok2, Err1>, Result<Ok2, Err1>>();
+    assert_compatible::<Result<Ok2, Err2>, Result<Ok1, Err1>>();
+
+    assert_compatible::<Result<Ok1, Err2>, Result<Ok2, Err1>>();
+    assert_compatible::<Result<Ok2, Err1>, Result<Ok1, Err2>>();
 }

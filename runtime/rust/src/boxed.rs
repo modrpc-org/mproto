@@ -1,7 +1,7 @@
-use crate::{BaseLen, Decode, DecodeCursor, DecodeResult, Encode, EncodeCursor, Owned};
+use crate::{BaseLen, Compatible, Decode, DecodeCursor, DecodeResult, Encode, EncodeCursor, Owned};
 
 #[cfg(any(feature = "std", feature = "alloc"))]
-use crate::{Compatible, Lazy};
+use crate::Lazy;
 
 #[cfg(any(feature = "std", feature = "alloc"))]
 impl<T: Owned> Owned for Box<T> {
@@ -50,7 +50,10 @@ pub struct BoxLazy<'a, T: Owned> {
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+impl<T: Owned> Compatible<Box<T>> for Box<T> {}
+#[cfg(any(feature = "std", feature = "alloc"))]
 impl<T: Owned> Compatible<Box<T>> for BoxLazy<'_, T> {}
+impl<T: Owned> Compatible<BoxLazy<'_, T>> for BoxLazy<'_, T> {}
 #[cfg(any(feature = "std", feature = "alloc"))]
 impl<T: Owned> Compatible<BoxLazy<'_, T>> for Box<T> {}
 
