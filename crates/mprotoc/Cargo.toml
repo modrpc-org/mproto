@@ -1,6 +1,6 @@
 [package]
 name = "mprotoc"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2024"
 description = "mproto compiler - generate code to encode and decode mproto objects in multiple languages"
 repository = "https://github.com/modrpc-org/mproto"
@@ -12,4 +12,4 @@ readme = "README.md"
 [dependencies]
 mproto-codegen = { version = "0.0", path = "../mproto-codegen" }
 clap = { version = "4", features = ["derive"] }
-genco = "0.17"
+genco = "0.18"
