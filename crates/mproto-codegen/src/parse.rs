@@ -301,7 +301,22 @@ pub fn parse_file(path: impl AsRef<std::path::Path>) -> Result<Vec<TypeDef>, Str
         ));
     }
 
-    let (_, type_defs) = root(&file_str).map_err(|e| format!("mproto schema parse error: {e}"))?;
+    // Remove comments
+    let mut schema_str = file_str.lines()
+        .map(|line| {
+            if let Some(index) = line.find("//") {
+                // Return the slice from the start of the line up to the comment marker
+                &line[..index]
+            } else {
+                // If no comment is found, return the entire line
+                line
+            }
+        })
+        .collect::<Vec<&str>>()
+        .join("\n");
+    schema_str += "\n";
+
+    let (_, type_defs) = root(&schema_str).map_err(|e| format!("mproto schema parse error: {e}"))?;
 
     Ok(type_defs)
 }

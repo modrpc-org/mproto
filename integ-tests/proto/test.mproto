@@ -10,8 +10,9 @@ struct JustASimpleStruct {
 
 struct EmptyStruct { }
 
+// A simple enum
 enum SimpleEnum {
-    Fizz,
+    Fizz, // comment
     Buzz,
 }
 
@@ -30,6 +31,7 @@ enum EnumWithFloat {
 struct Foo<T, U> {
     x: T,
     y: U,
+    // plumbing a type parameter
     z: result<string, Bar<U>>,
 }
 
