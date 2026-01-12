@@ -1,6 +1,6 @@
 [package]
 name = "mproto"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2024"
 description = "The Rust runtime library for mproto schemas"
 repository = "https://github.com/modrpc-org/mproto"

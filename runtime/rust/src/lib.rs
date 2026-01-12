@@ -60,10 +60,12 @@ pub trait Lazy<'a>: Encode + Decode<'a> + Copy + Clone + PartialEq + core::fmt::
     type Owned: Owned<Lazy<'a> = Self>;
 }
 
+#[inline]
 pub fn encoded_len<T: Encode>(value: T) -> usize {
     T::BASE_LEN + value.scratch_len()
 }
 
+#[inline]
 pub fn encode_value<E: Encode>(v: E, mut buf: impl AsMut<[u8]>) -> usize {
     let mut cursor = EncodeCursor::new::<E>(buf.as_mut());
     v.encode(&mut cursor);
@@ -71,6 +73,7 @@ pub fn encode_value<E: Encode>(v: E, mut buf: impl AsMut<[u8]>) -> usize {
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[inline]
 pub fn encode_value_vec<E: Encode>(v: E) -> Vec<u8> {
     let mut buf = vec![0u8; encoded_len(&v)];
     let mut cursor = EncodeCursor::new::<E>(buf.as_mut());
@@ -78,6 +81,7 @@ pub fn encode_value_vec<E: Encode>(v: E) -> Vec<u8> {
     buf
 }
 
+#[inline]
 pub fn decode_value<'a, D: Decode<'a>>(buf: &'a [u8]) -> DecodeResult<D> {
     Decode::decode(&DecodeCursor::new(buf))
 }
@@ -96,6 +100,7 @@ mod sealed {
 }
 
 impl<T: Owned, B: Deref<Target = [u8]> + core::marker::Unpin> LazyBuf<T, B> {
+    #[inline]
     pub fn new(buf: B) -> Self {
         let buf = Pin::new(buf);
         let lazy: T::Lazy<'_> = decode_value(buf.as_ref().get_ref().as_ref()).unwrap();
@@ -105,11 +110,13 @@ impl<T: Owned, B: Deref<Target = [u8]> + core::marker::Unpin> LazyBuf<T, B> {
         Self { buf, lazy }
     }
 
+    #[inline]
     pub fn get<'a>(&'a self) -> T::Lazy<'a> {
         // TODO is this actually safe to do?
         unsafe { core::mem::transmute(self.lazy.clone()) }
     }
 
+    #[inline]
     pub fn map<U: Owned, F>(self, f: F) -> LazyBuf<U, B>
     where
         F: for<'a> sealed::LazyBufMapFn<T::Lazy<'a>, U::Lazy<'a>>,
@@ -132,10 +139,12 @@ impl<T: BaseLen + ?Sized> BaseLen for &T {
 }
 
 impl<T: Encode + ?Sized> Encode for &T {
+    #[inline]
     fn scratch_len(&self) -> usize {
         T::scratch_len(self)
     }
 
+    #[inline]
     fn encode(&self, cursor: &mut EncodeCursor) {
         T::encode(self, cursor);
     }
@@ -146,10 +155,12 @@ impl<T: BaseLen + ?Sized> BaseLen for &mut T {
 }
 
 impl<T: Encode + ?Sized> Encode for &mut T {
+    #[inline]
     fn scratch_len(&self) -> usize {
         T::scratch_len(self)
     }
 
+    #[inline]
     fn encode(&self, cursor: &mut EncodeCursor) {
         T::encode(self, cursor);
     }

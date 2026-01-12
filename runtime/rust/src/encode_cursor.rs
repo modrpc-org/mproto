@@ -7,6 +7,7 @@ pub struct EncodeCursor<'a> {
 }
 
 impl<'a> EncodeCursor<'a> {
+    #[inline]
     pub fn new<T: Encode + ?Sized>(buffer: &'a mut [u8]) -> Self {
         let (base_buffer, scratch_buffer) = buffer.split_at_mut(T::BASE_LEN);
 
@@ -17,14 +18,17 @@ impl<'a> EncodeCursor<'a> {
         }
     }
 
+    #[inline]
     pub fn encoded_len(&self) -> usize {
         self.scratch_offset as usize
     }
 
+    #[inline]
     pub fn base(&mut self, size: usize) -> &'a mut [u8] {
         self.base_cursor.take(size)
     }
 
+    #[inline]
     pub fn scratch(&mut self, size: usize) -> &'a mut [u8] {
         // Write the offset of this scratch buffer into the base buffer.
         self.base(4)
@@ -34,6 +38,7 @@ impl<'a> EncodeCursor<'a> {
         self.scratch_cursor.take(size)
     }
 
+    #[inline]
     pub fn inner_in_scratch(&mut self, base_size: usize, f: impl FnOnce(&mut Self)) {
         // https://github.com/alecmocatta/replace_with/blob/1e86e4a3633c133cd3a8f797dc06ac92401bff1e/src/lib.rs#L478
         fn replace_with<T, F: FnOnce(T) -> T>(dest: &mut T, f: F) {
@@ -46,6 +51,7 @@ impl<'a> EncodeCursor<'a> {
         replace_with(self, move |s| Self::_inner_in_scratch(s, base_size, f));
     }
 
+    #[inline]
     fn _inner_in_scratch(mut self, base_size: usize, f: impl FnOnce(&mut Self)) -> Self {
         let inner_base_buffer = self.scratch(base_size);
 
@@ -76,10 +82,12 @@ struct BufferEncodeCursor<'a> {
 }
 
 impl<'a> BufferEncodeCursor<'a> {
+    #[inline]
     fn new(buffer: &'a mut [u8]) -> Self {
         Self { buffer }
     }
 
+    #[inline]
     fn take(&mut self, size: usize) -> &'a mut [u8] {
         // Use a little unsafe to make the compiler forget that it got `buffer` from self. This is
         // safe because we immediately replace `self.buffer` with the remaining buffer after

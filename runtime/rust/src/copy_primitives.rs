@@ -7,6 +7,7 @@ macro_rules! copy_primitive_owned_impl {
         impl Owned for $t {
             type Lazy<'a> = $t;
 
+            #[inline]
             fn lazy_to_owned(lazy: Self::Lazy<'_>) -> DecodeResult<Self> {
                 Ok(lazy)
             }
@@ -38,14 +39,17 @@ impl BaseLen for () {
 }
 
 impl Encode for () {
+    #[inline]
     fn scratch_len(&self) -> usize {
         0
     }
 
+    #[inline]
     fn encode(&self, _: &mut EncodeCursor) {}
 }
 
 impl<'a> Decode<'a> for () {
+    #[inline]
     fn decode(_: &DecodeCursor<'a>) -> DecodeResult<Self> {
         Ok(())
     }
@@ -56,16 +60,19 @@ impl BaseLen for bool {
 }
 
 impl Encode for bool {
+    #[inline]
     fn scratch_len(&self) -> usize {
         0
     }
 
+    #[inline]
     fn encode(&self, cursor: &mut EncodeCursor) {
         cursor.base(1)[0] = if *self { 1 } else { 0 };
     }
 }
 
 impl<'a> Decode<'a> for bool {
+    #[inline]
     fn decode(cursor: &DecodeCursor<'a>) -> DecodeResult<Self> {
         let b = cursor.base(1)[0];
         if b <= 1 {
@@ -81,16 +88,19 @@ impl BaseLen for u8 {
 }
 
 impl Encode for u8 {
+    #[inline]
     fn scratch_len(&self) -> usize {
         0
     }
 
+    #[inline]
     fn encode(&self, cursor: &mut EncodeCursor) {
         cursor.base(1)[0] = *self;
     }
 }
 
 impl<'a> Decode<'a> for u8 {
+    #[inline]
     fn decode(cursor: &DecodeCursor<'a>) -> DecodeResult<Self> {
         Ok(cursor.base(1)[0])
     }
@@ -101,16 +111,19 @@ impl BaseLen for i8 {
 }
 
 impl Encode for i8 {
+    #[inline]
     fn scratch_len(&self) -> usize {
         0
     }
 
+    #[inline]
     fn encode(&self, cursor: &mut EncodeCursor) {
         cursor.base(1)[0] = *self as u8;
     }
 }
 
 impl<'a> Decode<'a> for i8 {
+    #[inline]
     fn decode(cursor: &DecodeCursor<'a>) -> DecodeResult<Self> {
         Ok(cursor.base(1)[0] as i8)
     }
@@ -123,10 +136,12 @@ macro_rules! integer_primitive_encoding_impl {
         }
 
         impl Encode for $t {
+            #[inline]
             fn scratch_len(&self) -> usize {
                 0
             }
 
+            #[inline]
             fn encode(&self, cursor: &mut EncodeCursor) {
                 cursor
                     .base(<$t>::BASE_LEN)
@@ -135,6 +150,7 @@ macro_rules! integer_primitive_encoding_impl {
         }
 
         impl<'a> Decode<'a> for $t {
+            #[inline]
             fn decode(cursor: &DecodeCursor<'a>) -> DecodeResult<Self> {
                 Ok(<$t>::from_le_bytes(
                     cursor
