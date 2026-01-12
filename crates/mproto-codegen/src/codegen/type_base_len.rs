@@ -64,6 +64,7 @@ pub fn type_base_len<L: MprotoLang>(cx: &CodegenCx, ty: &Type) -> TypeBaseLen<L>
         Type::Primitive(PrimitiveType::I64)     => TypeBaseLen::constant(8),
         Type::Primitive(PrimitiveType::I128)    => TypeBaseLen::constant(16),
         Type::Primitive(PrimitiveType::F32)     => TypeBaseLen::constant(4),
+        Type::Primitive(PrimitiveType::F64)     => TypeBaseLen::constant(8),
         Type::Primitive(PrimitiveType::Bool)    => TypeBaseLen::constant(1),
         Type::Primitive(PrimitiveType::String)  => TypeBaseLen::constant(8),
         Type::Primitive(PrimitiveType::Box(_))  => TypeBaseLen::constant(4),

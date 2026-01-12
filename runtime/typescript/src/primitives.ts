@@ -177,16 +177,16 @@ export class Float32Encoder implements Encoder<number>, Decoder<number> {
 export const ProtoFloat32 = new Float32Encoder();
 
 export class Float64Encoder implements Encoder<number>, Decoder<number> {
-  baseLength = () => 4;
+  baseLength = () => 8;
 
   scratchLength(value: number): number { return 0; }
 
   encode(cursor: EncodeCursor, value: number) {
-    cursor.buffer.setFloat64(cursor.base(4), value, true);
+    cursor.buffer.setFloat64(cursor.base(8), value, true);
   }
 
   decode(cursor: DecodeCursor): number {
-    return cursor.buffer.getFloat64(cursor.base(4), true);
+    return cursor.buffer.getFloat64(cursor.base(8), true);
   }
 }
 

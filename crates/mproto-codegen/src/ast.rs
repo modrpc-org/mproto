@@ -38,6 +38,7 @@ pub enum PrimitiveType {
     I128,
     Bool,
     F32,
+    F64,
     String,
     Box(Box<Type>),
     List(Box<Type>),

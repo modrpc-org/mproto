@@ -111,6 +111,7 @@ fn builtin_ty(i: &str) -> IResult<&str, PrimitiveType> {
         map(tag("i64"), |_| PrimitiveType::I64),
         map(tag("i128"), |_| PrimitiveType::I128),
         map(tag("f32"), |_| PrimitiveType::F32),
+        map(tag("f64"), |_| PrimitiveType::F64),
         map(tag("bool"), |_| PrimitiveType::Bool),
         map(tag("string"), |_| PrimitiveType::String),
         box_ty,

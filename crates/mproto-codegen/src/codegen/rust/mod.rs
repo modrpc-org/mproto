@@ -38,6 +38,7 @@ pub fn rust_type_tokens(cx: &CodegenCx, ty: &ast::Type) -> rust::Tokens {
         ast::Type::Primitive(ast::PrimitiveType::I64) => quote! { i64 },
         ast::Type::Primitive(ast::PrimitiveType::I128) => quote! { i128 },
         ast::Type::Primitive(ast::PrimitiveType::F32) => quote! { f32 },
+        ast::Type::Primitive(ast::PrimitiveType::F64) => quote! { f64 },
         ast::Type::Primitive(ast::PrimitiveType::Bool) => quote! { bool },
         ast::Type::Primitive(ast::PrimitiveType::String) => quote! { String },
         ast::Type::Primitive(ast::PrimitiveType::Box(inner_ty)) => quote! {
@@ -82,6 +83,7 @@ pub fn rust_type_lazy_tokens(cx: &CodegenCx, ty: &ast::Type) -> rust::Tokens {
         ast::Type::Primitive(ast::PrimitiveType::I64) => quote! { i64 },
         ast::Type::Primitive(ast::PrimitiveType::I128) => quote! { i128 },
         ast::Type::Primitive(ast::PrimitiveType::F32) => quote! { f32 },
+        ast::Type::Primitive(ast::PrimitiveType::F64) => quote! { f64 },
         ast::Type::Primitive(ast::PrimitiveType::Bool) => quote! { bool },
         ast::Type::Primitive(ast::PrimitiveType::String) => quote! { &'a str },
         ast::Type::Primitive(ast::PrimitiveType::Box(inner_ty)) => quote! {
@@ -191,6 +193,7 @@ pub fn rust_type_default_value(cx: &CodegenCx, ty: &ast::Type) -> rust::Tokens {
         ast::Type::Primitive(ast::PrimitiveType::I64) => quote! { 0 },
         ast::Type::Primitive(ast::PrimitiveType::I128) => quote! { 0 },
         ast::Type::Primitive(ast::PrimitiveType::F32) => quote! { 0.0 },
+        ast::Type::Primitive(ast::PrimitiveType::F64) => quote! { 0.0 },
         ast::Type::Primitive(ast::PrimitiveType::Bool) => quote! { false },
         ast::Type::Primitive(ast::PrimitiveType::String) => quote! { 0 },
         ast::Type::Primitive(ast::PrimitiveType::Box(inner_ty)) => quote! {

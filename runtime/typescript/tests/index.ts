@@ -3,6 +3,7 @@ const {
   decodeValue, encodeValue,
   ProtoUint8, ProtoUint16, ProtoUint32, ProtoUint64,
   ProtoInt8, ProtoInt16, ProtoInt32, ProtoInt64,
+  ProtoFloat32, ProtoFloat64,
   ProtoBox, ProtoList, ProtoString, ProtoVoid,
   ProtoOption,
   ProtoResult, Result,
@@ -69,6 +70,28 @@ test("encode i64", t => {
   testEncodeDecode(t, ProtoInt64, -20000n);
   testEncodeDecode(t, ProtoInt64, 1234000001n);
   testEncodeDecode(t, ProtoInt64, -8394722983749283740n);
+});
+
+test("encode f32", t => {
+  function testEncodeDecodeFloat32(t, ty, v) {
+    let buffer = encodeValue(ty, v);
+    let decoded = decodeValue(ty, buffer, 0);
+    t.assert(Math.abs(decoded - v) < Math.abs(v * 0.000001));
+  }
+
+  t.plan(4);
+  testEncodeDecodeFloat32(t, ProtoFloat32, 1.23);
+  testEncodeDecodeFloat32(t, ProtoFloat32, -4.56);
+  testEncodeDecodeFloat32(t, ProtoFloat32, 0.0003);
+  testEncodeDecodeFloat32(t, ProtoFloat32, 100000000.3);
+});
+
+test("encode f64", t => {
+  t.plan(4);
+  testEncodeDecode(t, ProtoFloat64, 1.23);
+  testEncodeDecode(t, ProtoFloat64, -4.56);
+  testEncodeDecode(t, ProtoFloat64, 0.000314159);
+  testEncodeDecode(t, ProtoFloat64, 10000000000.456);
 });
 
 test("encode string", t => {

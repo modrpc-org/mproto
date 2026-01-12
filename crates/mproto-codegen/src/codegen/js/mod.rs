@@ -37,6 +37,7 @@ pub fn js_type_tokens(cx: &CodegenCx, ty: &Type) -> js::Tokens {
         Type::Primitive(PrimitiveType::I64) => quote! { bigint },
         Type::Primitive(PrimitiveType::I128) => quote! { bigint },
         Type::Primitive(PrimitiveType::F32) => quote! { number },
+        Type::Primitive(PrimitiveType::F64) => quote! { number },
         Type::Primitive(PrimitiveType::Bool) => quote! { boolean },
         Type::Primitive(PrimitiveType::String) => quote! { string },
         Type::Primitive(PrimitiveType::Box(inner_ty)) => js_type_tokens(cx, inner_ty),
@@ -219,6 +220,9 @@ pub fn js_type_encoder(cx: &CodegenCx, ty: &Type) -> js::Tokens {
         }
         Type::Primitive(PrimitiveType::F32) => {
             quote! { $(js::import("@modrpc-org/mproto", "ProtoFloat32")) }
+        }
+        Type::Primitive(PrimitiveType::F64) => {
+            quote! { $(js::import("@modrpc-org/mproto", "ProtoFloat64")) }
         }
         Type::Primitive(PrimitiveType::Bool) => {
             quote! { $(js::import("@modrpc-org/mproto", "ProtoBool")) }

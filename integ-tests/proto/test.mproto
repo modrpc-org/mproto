@@ -4,6 +4,8 @@ struct JustASimpleStruct {
     c: string,
     d: [u8],
     e: option<bool>,
+    f: f32,
+    g: f64,
     y: result<string, void>,
     z: box<result<string, void>>,
 }
