@@ -10,9 +10,9 @@ struct JustASimpleStruct {
     z: box<result<string, void>>,
 }
 
+// a comment occupying a whole line
 struct EmptyStruct { }
 
-// A simple enum
 enum SimpleEnum {
     Fizz, // comment
     Buzz,
@@ -28,6 +28,15 @@ struct StructWithFloat {
 
 enum EnumWithFloat {
     Float { x: f32 },
+}
+
+struct StructWithDouble {
+    // an indented comment
+    x: f64,
+}
+
+enum EnumWithDouble {
+    Float { x: f64 },
 }
 
 struct Foo<T, U> {

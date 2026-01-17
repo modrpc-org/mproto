@@ -150,7 +150,7 @@ version = "0.2.3"
 
 [[package]]
 name = "mproto-codegen"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "genco",
  "nom",
@@ -158,7 +158,7 @@ dependencies = [
 
 [[package]]
 name = "mprotoc"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "clap",
  "genco",

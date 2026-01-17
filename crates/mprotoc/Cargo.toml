@@ -1,6 +1,6 @@
 [package]
 name = "mprotoc"
-version = "0.0.6"
+version = "0.0.7"
 edition = "2024"
 description = "mproto compiler - generate code to encode and decode mproto objects in multiple languages"
 repository = "https://github.com/modrpc-org/mproto"

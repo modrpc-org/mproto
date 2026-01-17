@@ -84,6 +84,7 @@ pub fn enum_requires_heap(db: &Database, e: &Enum) -> bool {
 pub fn struct_contains_float(db: &Database, s: &Struct) -> bool {
     TypeWalker::new().walk_struct(db, s, &mut |leaf_ty| match leaf_ty {
         PrimitiveType::F32 => true,
+        PrimitiveType::F64 => true,
         _ => false,
     })
 }
@@ -91,6 +92,7 @@ pub fn struct_contains_float(db: &Database, s: &Struct) -> bool {
 pub fn enum_contains_float(db: &Database, e: &Enum) -> bool {
     TypeWalker::new().walk_enum(db, e, &mut |leaf_ty| match leaf_ty {
         PrimitiveType::F32 => true,
+        PrimitiveType::F64 => true,
         _ => false,
     })
 }
