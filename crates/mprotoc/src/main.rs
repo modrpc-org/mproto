@@ -1,5 +1,3 @@
-use std::fs::File;
-use std::io::Read;
 use std::process;
 
 use clap::Parser;
@@ -38,22 +36,8 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut schema_file = match File::open(&args.schema_file) {
-        Ok(f) => f,
-        Err(e) => {
-            println!("ERROR: Failed to open {}: {}", args.schema_file, e);
-            process::exit(1);
-        }
-    };
-
-    let mut schema_file_str = String::new();
-    if let Err(e) = schema_file.read_to_string(&mut schema_file_str) {
-        println!("ERROR: Failed to read {}: {}", args.schema_file, e);
-        process::exit(1);
-    }
-
     // Parse input file
-    let (_, type_defs) = match mproto_codegen::parse::root(&schema_file_str) {
+    let type_defs = match mproto_codegen::parse::parse_file(&args.schema_file) {
         Ok(type_defs) => type_defs,
         Err(e) => {
             println!("ERROR: Failed to parse {}: {:?}", args.schema_file, e);

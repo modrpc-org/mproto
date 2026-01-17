@@ -280,6 +280,18 @@ fn named_fields<'a>(i: &'a str) -> IResult<&'a str, Vec<NamedField>> {
     )(i)
 }
 
+pub fn strip_comments(s: &str) -> String {
+    s.lines().map(|line| {
+        if let Some(index) = line.find("//") {
+            &line[..index]
+        } else {
+            line
+        }
+    })
+    .collect::<Vec<&str>>()
+    .join("\n")
+}
+
 pub fn root<'a>(i: &'a str) -> IResult<&'a str, Vec<TypeDef>> {
     separated_list0(multispace0, type_def)(i)
 }
@@ -287,12 +299,10 @@ pub fn root<'a>(i: &'a str) -> IResult<&'a str, Vec<TypeDef>> {
 pub fn parse_file(path: impl AsRef<std::path::Path>) -> Result<Vec<TypeDef>, String> {
     use std::io::Read;
 
-    // Open input file
     let Ok(mut file) = std::fs::File::open(path.as_ref()) else {
         return Err(format!("Failed to open file '{}'", path.as_ref().display()));
     };
 
-    // Load file to string
     let mut file_str = String::new();
     if let Err(e) = file.read_to_string(&mut file_str) {
         return Err(format!(
@@ -302,22 +312,8 @@ pub fn parse_file(path: impl AsRef<std::path::Path>) -> Result<Vec<TypeDef>, Str
         ));
     }
 
-    // Remove comments
-    let mut schema_str = file_str.lines()
-        .map(|line| {
-            if let Some(index) = line.find("//") {
-                // Return the slice from the start of the line up to the comment marker
-                &line[..index]
-            } else {
-                // If no comment is found, return the entire line
-                line
-            }
-        })
-        .collect::<Vec<&str>>()
-        .join("\n");
-    schema_str += "\n";
-
-    let (_, type_defs) = root(&schema_str).map_err(|e| format!("mproto schema parse error: {e}"))?;
+    let uncommented_schema = strip_comments(&file_str) + "\n";
+    let (_, type_defs) = root(&uncommented_schema).map_err(|e| format!("mproto schema parse error: {e}"))?;
 
     Ok(type_defs)
 }
@@ -325,6 +321,14 @@ pub fn parse_file(path: impl AsRef<std::path::Path>) -> Result<Vec<TypeDef>, Str
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_strip_comments() {
+        assert_eq!(
+            strip_comments("foo // bar\n// bip boop\nbazz"),
+            "foo \n\nbazz".to_string(),
+        );
+    }
 
     #[test]
     fn test_builtin_u8() {
